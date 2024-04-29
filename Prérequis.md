@@ -13,7 +13,9 @@ Configuration recommandé :
 
 Il faut obligatoirement Python d'installer sur la machine
 Commande :
+
 Linux : sudo apt install python3
+
 Windows : https://www.python.org/downloads/
 
 
