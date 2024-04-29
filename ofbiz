@@ -1,6 +1,6 @@
 import requests
 
-url = "http://localhost:8443/webtools/control/ProgramExport/?USERNAME=&PASSWORD=&requirePasswordChange=Y"
+url = "http://192.168.1.67:8443/webtools/control/ProgramExport/?USERNAME=&PASSWORD=&requirePasswordChange=Y"
 
 headers = {
     "Accept-Encoding": "gzip, deflate, br",
