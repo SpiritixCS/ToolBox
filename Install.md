@@ -14,5 +14,5 @@ sudo python3 ./installation.py
 ```
 4. Exécuter la toolbox.
 ```
-python3 toolbox.py -h
+python3 ./toolbox.py -h
 ```
