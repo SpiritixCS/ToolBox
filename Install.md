@@ -1,6 +1,6 @@
 Sous Linux :
 
-1. Update && Upgrade des répertoires.
+1. Update && upgrade des répertoires.
 ```
 sudo apt update && apt upgrade
 ```
@@ -17,7 +17,7 @@ git clone https://github.com/SpiritixCS/ToolBox.git
 ```
 cd ./toolbox
 ```
-5. Exécuter le script d'installation avec les privilèges root.
+5. Exécuter le script d'installation.
 ```
 sudo python3 ./installation.py
 ```
