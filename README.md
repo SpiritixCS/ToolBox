@@ -36,7 +36,7 @@ GIF
 
 # :mortar_board: Références
 
-Python NMAP : https://pypi.org/project/python-nmap/ 
-Villain : https://github.com/t3l3machus/Villain 
-CVE-2019-15107 : https://nvd.nist.gov/vuln/detail/cve-2019-15107 
-CVE-2021-25646 : https://nvd.nist.gov/vuln/detail/CVE-2021-25646 
+- Python NMAP : https://pypi.org/project/python-nmap/ 
+- Villain : https://github.com/t3l3machus/Villain 
+- CVE-2019-15107 : https://nvd.nist.gov/vuln/detail/cve-2019-15107 
+- CVE-2021-25646 : https://nvd.nist.gov/vuln/detail/CVE-2021-25646 
