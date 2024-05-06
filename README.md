@@ -32,7 +32,7 @@ GIF
 
 # :computer: Preview 
 
-
+# :gear: Configuration reccomandée
 
 # :mortar_board: Références
 
