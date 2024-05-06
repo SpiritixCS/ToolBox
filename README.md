@@ -1,5 +1,4 @@
 
-![Capture d’écran 2024-05-06 à 02 22 36](https://github.com/SpiritixCS/ToolBox/assets/77000299/cd230dc6-21e0-4cc0-8c70-dbe3430c0fdd)
 
 # Objectif
 
@@ -8,6 +7,7 @@ Elle embarque des fonctions de scan avancées grâce à l'outil nmap, ainsi que 
 
 Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'exploit' (-e/--exploit), il est nécessaire pour l'utilisateur de disposer de l'outil [VIllain](https://github.com/t3l3machus/Villain) car ce dernier permet de récupérer les reverse-shells envoyés par la toolbox lors de l'exécution des exploit CVE.
 
+# Fonctionnalités
 
 # Preview
 
