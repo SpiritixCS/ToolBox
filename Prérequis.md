@@ -1,3 +1,4 @@
+A intégrer dans le readme.
 Configuration recommandé :
 
 - Système (x64 bit), 4go de ram
