@@ -9,7 +9,8 @@ Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'e
 
 # :clipboard: Fonctionnalités 
 Scan d'hôte via adresse IP (127.0.0.1)
-GIF
+![GIF IP (1)](https://github.com/SpiritixCS/ToolBox/assets/77000299/31f5bf1e-a265-439c-9cd2-8fb24c7a098b)
+
 
 Découverte réseau via range (192.168.1.0/24)
 GIF
@@ -34,7 +35,7 @@ GIF
 
 # :gear: Configuration recommandée
 
-Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreures lors de son exécution.
+Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
 
 # :mortar_board: Références
 
