@@ -16,13 +16,19 @@ Scan d'hôte via adresse IP (127.0.0.1)
 
 
 Découverte réseau via range (192.168.1.0/24)
-GIF
+
+![RANGE](https://github.com/SpiritixCS/ToolBox/assets/77000299/44d3250a-9fde-427a-a3a4-1ff2311dd1d8)
+
 
 Scan approfondi des ports 
-GIF
+
+![NETWORK DEEP](https://github.com/SpiritixCS/ToolBox/assets/77000299/c89e86f1-dbb9-49c2-90dd-7176fba60f3d)
+
 
 Découverte des CVEs sans exploitation (-s/--scan)
-GIF
+
+![CVE SCAN](https://github.com/SpiritixCS/ToolBox/assets/77000299/be80b04d-c161-4b35-9f5c-ad758253e99d)
+
 
 Découverte et exploitation des CVEs (-e/--eploit)
 GIF
