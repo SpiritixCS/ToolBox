@@ -9,7 +9,7 @@ Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'e
 
 # :gear: Configuration recommandée
 
-Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
+Cette ToolBox a été concue et développée sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
 
 
 # :clipboard: Fonctionnalités 
