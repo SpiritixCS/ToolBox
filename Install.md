@@ -1,18 +1,27 @@
 Sous Linux :
 
-1. Clôner le dépot github.
+1. Update && Upgrade des répertoires.
+```
+sudo apt update && apt upgrade
+```
+3. Installer Python3 & PIP.
+```
+sudo apt-get install python3
+sudo apt-get install pip
+```
+4. Clôner le dépot github.
 ```
 git clone https://github.com/SpiritixCS/ToolBox.git
 ```
-2. Se rendre dans le répertoire toolbox.
+4. Se rendre dans le répertoire toolbox.
 ```
 cd ./toolbox
 ```
-3. Exécuter le script d'installation avec les privilèges root.
+5. Exécuter le script d'installation avec les privilèges root.
 ```
 sudo python3 ./installation.py
 ```
-4. Exécuter la toolbox.
+6. Exécuter la toolbox.
 ```
-python3 ./toolbox.py -h
+sudo python3 ./toolbox.py -h
 ```
