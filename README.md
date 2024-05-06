@@ -10,7 +10,7 @@ Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'e
 # :clipboard: Fonctionnalités 
 Scan d'hôte via adresse IP (127.0.0.1)
 
-- ![IP](https://github.com/SpiritixCS/ToolBox/assets/77000299/102d05b8-5e0d-43b5-a120-085cb60ab5a4)
+![IP](https://github.com/SpiritixCS/ToolBox/assets/77000299/102d05b8-5e0d-43b5-a120-085cb60ab5a4)
 
 
 
