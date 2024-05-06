@@ -12,7 +12,7 @@ cd ./toolbox
 ```
 sudo python3 ./installation.py
 ```
-
+4. Exécuter la toolbox.
 ```
-Enjoy :)
+python3 toolbox.py -h
 ```
