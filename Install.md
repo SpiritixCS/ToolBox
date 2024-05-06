@@ -1,3 +1,6 @@
 Sous Linux :
+git clone 
 
-Sous Windows
+cd /toolbox
+sudo python3 ./installation.py
+Enjoy :)
