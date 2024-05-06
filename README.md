@@ -20,7 +20,7 @@ GIF
 Découverte des CVEs sans exploitation (-s/--scan)
 GIF
 
-Découverte et Exploitation des CVEs (-e/--eploit)
+Découverte et exploitation des CVEs (-e/--eploit)
 GIF
 
 Réception automatique de reverse shell via l'outil Villain 
