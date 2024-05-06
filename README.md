@@ -7,12 +7,15 @@ Elle embarque des fonctions de scan avancées grâce à l'outil nmap, ainsi que 
 
 Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'exploit' (-e/--exploit), il est nécessaire pour l'utilisateur de disposer de l'outil [VIllain](https://github.com/t3l3machus/Villain) car ce dernier permet de récupérer les reverse-shells envoyés par la toolbox lors de l'exécution des exploit CVE.
 
+# :gear: Configuration recommandée
+
+Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
+
+
 # :clipboard: Fonctionnalités 
 Scan d'hôte via adresse IP (127.0.0.1)
 
 ![IP](https://github.com/SpiritixCS/ToolBox/assets/77000299/102d05b8-5e0d-43b5-a120-085cb60ab5a4)
-
-
 
 
 Découverte réseau via range (192.168.1.0/24)
@@ -45,10 +48,6 @@ GIF
 
 
 # :computer: Preview 
-
-# :gear: Configuration recommandée
-
-Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
 
 # :mortar_board: Références
 
