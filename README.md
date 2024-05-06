@@ -32,7 +32,9 @@ GIF
 
 # :computer: Preview 
 
-# :gear: Configuration reccomandée
+# :gear: Configuration recommandée
+
+Cette ToolBox a été développée et concue sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreures lors de son exécution.
 
 # :mortar_board: Références
 
