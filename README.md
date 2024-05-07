@@ -58,4 +58,8 @@ GIF
 - Villain : https://github.com/t3l3machus/Villain 
 - Python NMAP : https://pypi.org/project/python-nmap/ 
 - CVE-2019-15107 : https://nvd.nist.gov/vuln/detail/cve-2019-15107 
-- CVE-2021-25646 : https://nvd.nist.gov/vuln/detail/CVE-2021-25646 
+- CVE-2021-25646 : https://nvd.nist.gov/vuln/detail/CVE-2021-25646
+
+# :warning: Disclaimer
+
+Usage of this Toolbox for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.
