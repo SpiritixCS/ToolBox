@@ -435,7 +435,8 @@ def main():
 
 
     else:
-        print("You need to use -S (Scan) or -E (Exploit) mode")
+        parser.print_help()
+
 
 # Prompt for user input
 display_banner()
