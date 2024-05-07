@@ -10,6 +10,7 @@ Afin de parvenir à l'exploitation des dites CVE en lançant le script en mode '
 # :gear: Configuration recommandée
 
 Cette ToolBox a été conçue et développée sur Kali Linux. Nous recommandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
+
 Outils nécessaires (cf /install.md) :
   - Python3
   - nmap
