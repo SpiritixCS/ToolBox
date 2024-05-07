@@ -90,7 +90,7 @@ def ask_ip_range(scan_type):
                 print(RED +"Invalid network address format. Please provide a valid network range.")
 
 def net_fullscan_ask():
-    net_fullscan_asking = input(ENDC + "Do you want to run a deep scan for each discoverd host ? (O/n)").lower()
+    net_fullscan_asking = input(ENDC + "Do you want to run a deep scan for each discoverd host ? (Y/n)").lower()
     if net_fullscan_asking == "o" or net_fullscan_asking == "":
         net_fullscan = True
     else:
