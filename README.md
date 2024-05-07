@@ -60,6 +60,6 @@ GIF
 - CVE-2019-15107 : https://nvd.nist.gov/vuln/detail/cve-2019-15107 
 - CVE-2021-25646 : https://nvd.nist.gov/vuln/detail/CVE-2021-25646
 
-# :warning: Disclaimer
+# :warning: Avertissement
 
 L'utilisation de cette Toolbox pour attaquer des cibles sans consentement mutuel préalable est illégale. Il incombe à l'utilisateur final de respecter toutes les lois locales, nationales et fédérales applicables. Les développeurs n'assument AUCUNE responsabilité et ne sont PAS responsables de toute mauvaise utilisation ou de tout dommage causé par cet outil.
