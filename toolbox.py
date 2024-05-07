@@ -116,7 +116,7 @@ def simple_scan(adresse_ip):
         if not (result_list):
             raise ValueError(RED + "❌ No open port found on the specified host." + ENDC)
         else :
-            print (f"Ports ouvers: {str(result_list)}\n")
+            print (f"Open ports: {str(result_list)}\n")
         return result_list
     except ValueError as ve:
         print(ve)
@@ -140,7 +140,7 @@ def network_simple_scan(network_range,lhost):
             raise ValueError(RED + "❌ No available host found on the specified network." + ENDC)
         else :
             print (BLUE + f"Available Hosts:{ENDC}\n{hosts_list}\n")
-            print (BLUE + f"Nobre d'hotes : {hostcount}")
+            print (BLUE + f"Number of available hosts : {hostcount}")
         return network_range and hosts_list
     except ValueError as ve:
         print(ve)
