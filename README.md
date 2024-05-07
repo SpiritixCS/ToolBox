@@ -62,4 +62,4 @@ GIF
 
 # :warning: Disclaimer
 
-Usage of this Toolbox for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.
+L'utilisation de cette Toolbox pour attaquer des cibles sans consentement mutuel préalable est illégale. Il incombe à l'utilisateur final de respecter toutes les lois locales, nationales et fédérales applicables. Les développeurs n'assument AUCUNE responsabilité et ne sont PAS responsables de toute mauvaise utilisation ou de tout dommage causé par cet outil.
