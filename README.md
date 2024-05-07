@@ -3,22 +3,22 @@
 # :dart: Objectif
 
 La ToolBox a pour objectif de fournir à son utilistateur un moyen simple et pratique de détecter et d'exploiter si possible les **CVE-2019-15107** & **CVE-2021-25646** sur un ou plusieurs hôtes présents sur un réseau local.
-Elle embarque des fonctions de scan avancées grâce à l'outil nmap, ainsi que la possibilité pour l'utilisateur d'exporter un rapport PDF du scan qu'il vient d'effectuer.
+Elle intègre des fonctions de scan avancées grâce à l'outil nmap, et offre la possibilité à l'utilisateur d'exporter un rapport PDF du scan qu'il vient d'effectuer.
 
-Afin de parvenir à l'exploitation des dites CVE en lancant le script en mode 'exploit' (-e/--exploit), il est nécessaire pour l'utilisateur de disposer de l'outil [VIllain](https://github.com/t3l3machus/Villain) car ce dernier permet de récupérer les reverse-shells envoyés par la toolbox lors de l'exécution des exploit CVE.
+Afin de parvenir à l'exploitation des dites CVE en lançant le script en mode 'exploit' (-e/--exploit), il est nécessaire pour l'utilisateur de disposer de l'outil [VIllain](https://github.com/t3l3machus/Villain) car ce dernier permet de récupérer les reverse-shells envoyés par la toolbox lors de l'exécution des exploits CVE.
 
 # :gear: Configuration recommandée
 
-Cette ToolBox a été concue et développée sur Kali Linux. Nous reccomandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
+Cette ToolBox a été conçue et développée sur Kali Linux. Nous recommandons donc l'utilisation de cette distribution pour limiter les erreurs lors de son exécution.
 
 
 # :clipboard: Fonctionnalités 
-Scan d'hôte via adresse IP (127.0.0.1)
+Scan d'hôte via l'adresse IP (127.0.0.1)
 
 ![IP](https://github.com/SpiritixCS/ToolBox/assets/77000299/102d05b8-5e0d-43b5-a120-085cb60ab5a4)
 
 
-Découverte réseau via range (192.168.1.0/24)
+Découverte du réseau via range (192.168.1.0/24)
 
 ![RANGE](https://github.com/SpiritixCS/ToolBox/assets/77000299/44d3250a-9fde-427a-a3a4-1ff2311dd1d8)
 
