@@ -74,23 +74,23 @@ def choose_scan_type():
 def ask_ip_range(scan_type):
     if scan_type == "i":
         while True:
-            adresse_ip = input(ENDC + "Entrez une adresse IP : ")
+            adresse_ip = input(ENDC + "Provide an IP address : ")
             if validate_ip_address(adresse_ip):
                 return adresse_ip
                 break
             else:
-                print(RED +"Format d'adresse IP invalide. Veuillez entrer une adresse IP valide." + ENDC)
+                print(RED +"Invalid IP address format. Please provide a valid IP." + ENDC)
     elif scan_type == "r":
         while True:
-            network_range = input(ENDC + "Entrez une adresse réseau (192.168.1.0/24) : ")
+            network_range = input(ENDC + "Provide a network range in CIDR (192.168.1.0/24) : ")
             if validate_network_range(network_range):
                 return network_range
                 break
             else:
-                print(RED +"Format d'adresse réseau invalide. Veuillez entrer une adresse valide.")
+                print(RED +"Invalid network address format. Please provide a valid network range.")
 
 def net_fullscan_ask():
-    net_fullscan_asking = input(ENDC + "Souhaitez vous effecture un scan en profondeur pour chaque hote découvert ? (O/n)").lower()
+    net_fullscan_asking = input(ENDC + "Do you want to run a deep scan for each discoverd host ? (O/n)").lower()
     if net_fullscan_asking == "o" or net_fullscan_asking == "":
         net_fullscan = True
     else:
@@ -104,7 +104,7 @@ def simple_scan(adresse_ip):
     try:
         scanner.scan(adresse_ip, arguments='-T5 -Pn -p 8888,10000,8080')
     except nmap.PortScannerError as e:
-        print("Erreur lors de l'analyse de l'adresse IP :", e)
+        print("Error while analysing the IP address :", e)
         return None, None
     for host in scanner.all_hosts():
         if 'tcp' in scanner[host]:
@@ -128,7 +128,7 @@ def network_simple_scan(network_range,lhost):
     try:
         scanner.scan(network_range, arguments='-T5 -sn -PU -PS -PA')
     except nmap.PortScannerError as e:
-        print("Erreur lors de l'analyse du réseau :", e)
+        print("Error while analysing the network :", e)
         sys.exit(1)
         return None, None
     for host in scanner.all_hosts():
