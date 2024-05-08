@@ -6,7 +6,13 @@ import ipaddress
 import sys
 import argparse
 import netifaces as ni
+import reportlab
 from tqdm import tqdm
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
 
 BLUE = "\033[94m"
 GREEN = "\033[92m"
@@ -382,6 +388,71 @@ def exploit_CVE_2021_25646(result_dict,lhost):
 
                 print("Exploit attempt done, reverse shell sent to Villain 192.168.1.72")
 
+def map_vulnerability_code(vulnerability_code):
+    if vulnerability_code == 25646:
+        return 'CVE-2021-25646'
+    elif vulnerability_code == 15107:
+        return 'CVE-2019-15107'
+    else:
+        return 'No CVE'
+
+def export_pdf_ip(result_dict):
+    for ip, details in result_dict.items():
+        doc_name = f"{ip}_report.pdf"
+        doc = SimpleDocTemplate(doc_name)
+
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Add title (IP address and hostname)
+        hostname = details['hostname']
+        title = f"Scan report for {ip}"
+        title_paragraph = Paragraph(title, styles['Title'])
+        elements.append(title_paragraph)
+
+        # Add spacer for spacing between title and port details
+        elements.append(Spacer(1, 12))
+
+        # Add port details
+        ip_data = [["Port", "Service", "State", "Product", "Version", "Extra Info", "Vulnerability"]]
+        for port, port_details in details['ports'].items():
+            port_number = port
+            service = port_details['name']
+            state = port_details['state']
+            product = port_details['product']
+            version = port_details['version']
+            extra_info = port_details['extrainfo']
+            vulnerability_code = port_details['vulnerability_detected']
+            vulnerability = map_vulnerability_code(vulnerability_code)
+            ip_data.append([port_number, service, state, product, version, extra_info, vulnerability])
+
+        # Create a table for port details
+        ip_table = Table(ip_data, repeatRows=1)
+        ip_table.setStyle([('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                           ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                           ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                           ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                           ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                           ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                           ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+        elements.append(ip_table)
+        elements.append(Spacer(1, 12))
+
+        doc.build(elements)
+
+        print(f"PDF export for {ip} done. Document saved as {doc_name}")
+
+
+
+# This function will map vulnerability codes to their corresponding CVE names
+def map_vulnerability_code(vulnerability_code):
+    if vulnerability_code == 25646:
+        return 'CVE_2019_15107'
+    elif vulnerability_code == 15107:
+        return 'CVE_2021_25646'
+    else:
+        return 'None'  # Return 'None' if no vulnerability detected
+
 def main():
     parser = argparse.ArgumentParser(description="This script will make multiple scans on hosts or network. It's meant to detect and/or exploit CVE-2019-15107 (Webmin 1.910) and CVE-2021-25646 (Apache Druid). This tool is developped for educationnal purposes, please use it only if you have explicit consent and authorisation to do so.")
     parser.add_argument("-s", "--scan", action="store_true", help="Scan mode, this mode will attempt scans but will never exploit any vulnerability found.")
@@ -412,7 +483,7 @@ def main():
             result_list = simple_scan(adresse_ip)
             # Perform the detailed scan and export results to CSV
             result_dict = better_scan(adresse_ip, result_list)
-
+            export_pdf_ip(result_dict)
 
     elif args.exploit:
         
