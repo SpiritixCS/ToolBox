@@ -1,0 +1,10 @@
+version: '2'
+services:
+  apache-druid:
+    image: vulhub/apache-druid:0.20.0
+    ports:
+      - "8888:8888"
+  webmin:
+    image: vulhub/webmin:1.910
+    ports:
+      - "10000:10000"
