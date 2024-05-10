@@ -29,7 +29,7 @@ Découverte du réseau via range (192.168.1.0/24)
 
 Découverte des CVEs sans exploitation (-s/--scan)
 
-![Vuln](https://github.com/SpiritixCS/ToolBox/assets/77000299/25803adb-c0d3-4977-8f45-9458c69329bc)
+![Vuln](https://github.com/SpiritixCS/ToolBox/assets/77000299/8a02d384-3b35-4f5c-8699-e6206715702a)
 
 
 Découverte et exploitation des CVEs (-e/--eploit)
